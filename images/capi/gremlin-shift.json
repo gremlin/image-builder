@@ -1,0 +1,6 @@
+{
+    "ami_groups": "",
+    "ami_regions": "us-east-1",
+    "aws_region": "us-east-1",
+    "node_custom_roles_post": "shift-ca"
+}
