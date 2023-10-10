@@ -9,3 +9,55 @@
 - name: Update image ca
   shell:
     cmd: /usr/sbin/update-ca-certificates
+- name: Create ecr-credential-provider config directory
+  file:
+    path: /etc/kubernetes/aws-ecr-credential-provider
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+- name: Install ecr-credential-provider config
+  copy:
+    src: etc/kubernetes/aws-ecr-credential-provider/config.yaml
+    dest: /etc/kubernetes/aws-ecr-credential-provider/config.yaml
+    owner: root
+    group: root
+    mode: 0644
+- name: Create kubelet plugin directory
+  file:
+    path: /var/lib/kubelet/plugins/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+- name: Install ecr-credential-provider
+  copy:
+    src: var/lib/kubelet/plugins/ecr-credential-provider
+    dest: /var/lib/kubelet/plugins/ecr-credential-provider
+    owner: root
+    group: root
+    mode: 0755
+- name: Install SHIFT IMDS emulator service
+  copy:
+    src: usr/bin/imds-emulator
+    dest: /usr/bin/imds-emulator
+    owner: root
+    group: root
+    mode: 755
+- name: Install SHIFT IMDS emulator systemd unit
+  copy:
+    src: etc/systemd/system/imds-emulator.service
+    dest: /etc/systemd/system/imds-emulator.service
+    owner: root
+    group: root
+    mode: 644
+- name: Enable SHIFT IMDS emulator systemd unit
+  systemd:
+    name: imds-emulator
+    enabled: yes
+    state: started
+    daemon_reload: yes
+- name: Uninstall SSM agent
+  snap:
+    name: amazon-ssm-agent
+    state: absent
